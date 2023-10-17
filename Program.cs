@@ -62,4 +62,21 @@ app.MapPost("/games", (Game game) =>
     return Results.CreatedAtRoute("GetGame", new { id = game.Id }, game);
 });
 
+app.MapPut("/games/{id}", (int id, Game updatedGame) =>
+{
+    Game? existingGame = games.Find(game => game.Id == id);
+
+    if (existingGame is null)
+    {
+        return Results.NotFound();
+    }
+
+    existingGame.Name = updatedGame.Name;
+    existingGame.Price = updatedGame.Price;
+    existingGame.ImageUri = updatedGame.ImageUri;
+    existingGame.ReleaseDate = updatedGame.ReleaseDate;
+
+    return Results.NoContent();
+});
+
 app.Run();
