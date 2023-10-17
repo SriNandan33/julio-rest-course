@@ -52,6 +52,14 @@ app.MapGet("/games/{id}", (int id) =>
     }
 
     return Results.Ok(game);
+}).WithName("GetGame");
+
+app.MapPost("/games", (Game game) =>
+{
+    game.Id = games.Count() + 1;
+    games.Add(game);
+
+    return Results.CreatedAtRoute("GetGame", new { id = game.Id }, game);
 });
 
 app.Run();
