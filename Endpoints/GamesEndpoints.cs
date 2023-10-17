@@ -8,7 +8,7 @@ public static class GamesEndpoints
 
     public static RouteGroupBuilder MapGamesEndpoints(this IEndpointRouteBuilder routes)
     {
-        GameRepository gameRepo = new();
+        InMemGamesRepository gameRepo = new();
 
         var gamesGroup = routes.MapGroup("/games").WithParameterValidation();
 
