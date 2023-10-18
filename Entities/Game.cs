@@ -9,11 +9,12 @@ public class Game
     [MaxLength(100)]
     public required string Name { get; set; }
     [Required]
+    [StringLength(20)]
     public required string Genre { get; set; }
     [Range(1, 100)]
     public decimal Price { get; set; }
     public DateTime ReleaseDate { get; set; }
     [Url]
-    [MaxLength(100)]
+    [StringLength(100)]
     public required string ImageUri { get; set; }
 }
