@@ -5,7 +5,7 @@ using GameStore.Repositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSingleton<IGamesRepository, InMemGamesRepository>();
+builder.Services.AddScoped<IGamesRepository, GamesRepository>();
 
 var connString = builder.Configuration.GetConnectionString("GameStoreDatabase");
 builder.Services.AddSqlServer<GameStoreContext>(connString);
