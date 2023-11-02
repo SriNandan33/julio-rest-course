@@ -10,6 +10,9 @@ builder.Services.AddScoped<IGamesRepository, GamesRepository>();
 var connString = builder.Configuration.GetConnectionString("GameStoreDatabase");
 builder.Services.AddSqlServer<GameStoreContext>(connString);
 
+builder.Services.AddAuthentication().AddJwtBearer();
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 app.Services.InitializeDb();

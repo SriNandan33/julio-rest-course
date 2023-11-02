@@ -23,7 +23,8 @@ public static class GamesEndpoints
             }
 
             return Results.Ok(game.AsDto());
-        }).WithName("GetGame");
+        }).WithName("GetGame")
+        .RequireAuthorization();
 
         gamesGroup.MapPost("/", (IGamesRepository gameRepo, CreateGameDTO createGameDTO) =>
         {
@@ -38,7 +39,8 @@ public static class GamesEndpoints
             gameRepo.Create(game);
 
             return Results.CreatedAtRoute("GetGame", new { id = game.Id }, game.AsDto());
-        });
+        })
+        .RequireAuthorization();
 
         gamesGroup.MapPut("/{id}", (IGamesRepository gameRepo, int id, UpdateGameDTO updatedGameDto) =>
         {
@@ -58,7 +60,8 @@ public static class GamesEndpoints
             gameRepo.Update(id, existingGame);
 
             return Results.NoContent();
-        });
+        })
+        .RequireAuthorization();
 
         gamesGroup.MapDelete("/{id}", (IGamesRepository gameRepo, int id) =>
         {
@@ -69,7 +72,8 @@ public static class GamesEndpoints
                 gameRepo.Delete(id);
             }
             return Results.NoContent();
-        });
+        })
+        .RequireAuthorization();
 
         return gamesGroup;
     }
