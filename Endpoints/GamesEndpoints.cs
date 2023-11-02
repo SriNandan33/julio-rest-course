@@ -24,7 +24,7 @@ public static class GamesEndpoints
 
             return Results.Ok(game.AsDto());
         }).WithName("GetGame")
-        .RequireAuthorization();
+        .RequireAuthorization("GamesRead");
 
         gamesGroup.MapPost("/", (IGamesRepository gameRepo, CreateGameDTO createGameDTO) =>
         {
@@ -61,7 +61,7 @@ public static class GamesEndpoints
 
             return Results.NoContent();
         })
-        .RequireAuthorization();
+        .RequireAuthorization("GamesWrite");
 
         gamesGroup.MapDelete("/{id}", (IGamesRepository gameRepo, int id) =>
         {
@@ -73,7 +73,7 @@ public static class GamesEndpoints
             }
             return Results.NoContent();
         })
-        .RequireAuthorization();
+        .RequireAuthorization("GamesWrite");
 
         return gamesGroup;
     }

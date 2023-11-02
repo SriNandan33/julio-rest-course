@@ -11,7 +11,11 @@ var connString = builder.Configuration.GetConnectionString("GameStoreDatabase");
 builder.Services.AddSqlServer<GameStoreContext>(connString);
 
 builder.Services.AddAuthentication().AddJwtBearer();
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("GamesRead", policy => policy.RequireClaim("scope", "games:read"));
+    options.AddPolicy("GamesWrite", policy => policy.RequireClaim("scope", "games:write"));
+});
 
 var app = builder.Build();
 
