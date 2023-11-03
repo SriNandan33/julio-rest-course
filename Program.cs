@@ -1,5 +1,4 @@
 
-using System.Diagnostics;
 using GameStore.Data;
 using GameStore.Endpoints;
 using GameStore.Middlewares;
@@ -19,13 +18,6 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("GamesRead", policy => policy.RequireClaim("scope", "games:read"));
     options.AddPolicy("GamesWrite", policy => policy.RequireClaim("scope", "games:write"));
 });
-// builder.Logging.AddJsonConsole(options =>
-// {
-//     options.JsonWriterOptions = new()
-//     {
-//         Indented = true
-//     };
-// });
 
 var app = builder.Build();
 
