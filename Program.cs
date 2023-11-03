@@ -5,6 +5,7 @@ using GameStore.Repositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddScoped<IGamesRepository, GamesRepository>();
 
 var connString = builder.Configuration.GetConnectionString("GameStoreDatabase");
@@ -16,8 +17,17 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("GamesRead", policy => policy.RequireClaim("scope", "games:read"));
     options.AddPolicy("GamesWrite", policy => policy.RequireClaim("scope", "games:write"));
 });
+// builder.Logging.AddJsonConsole(options =>
+// {
+//     options.JsonWriterOptions = new()
+//     {
+//         Indented = true
+//     };
+// });
 
 var app = builder.Build();
+
+app.UseHttpLogging();
 
 app.Services.InitializeDb();
 

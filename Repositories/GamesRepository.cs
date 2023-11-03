@@ -7,9 +7,11 @@ namespace GameStore.Repositories;
 public class GamesRepository : IGamesRepository
 {
     private readonly GameStoreContext dbContext;
-    public GamesRepository(GameStoreContext dbContext)
+    private readonly ILogger<GamesRepository> logger;
+    public GamesRepository(GameStoreContext dbContext, ILogger<GamesRepository> logger)
     {
         this.dbContext = dbContext;
+        this.logger = logger;
     }
 
     public IEnumerable<Game> GetAll()
@@ -26,6 +28,8 @@ public class GamesRepository : IGamesRepository
     {
         dbContext.Games.Add(game);
         dbContext.SaveChanges();
+
+        logger.LogInformation("Created game {Name} with price {Price}", game.Name, game.Price);
     }
 
     public void Update(int id, Game updatedGame)

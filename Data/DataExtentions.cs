@@ -9,5 +9,10 @@ public static class DataExtensions
         using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<GameStoreContext>();
         dbContext.Database.Migrate();
+
+        var logger = serviceProvider.GetRequiredService<ILoggerFactory>()
+        .CreateLogger("DB Initializer");
+
+        logger.LogInformation("Database is ready!");
     }
 }
