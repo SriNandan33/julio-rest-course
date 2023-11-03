@@ -1,6 +1,8 @@
 
+using System.Diagnostics;
 using GameStore.Data;
 using GameStore.Endpoints;
+using GameStore.Middlewares;
 using GameStore.Repositories;
 
 
@@ -26,6 +28,8 @@ builder.Services.AddAuthorization(options =>
 // });
 
 var app = builder.Build();
+
+app.UseMiddleware<RequestTimingMiddleWare>();
 
 app.UseHttpLogging();
 
