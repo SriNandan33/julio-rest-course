@@ -1,6 +1,7 @@
 
 using GameStore.Data;
 using GameStore.Endpoints;
+using GameStore.ErrorHandling;
 using GameStore.Middlewares;
 using GameStore.Repositories;
 
@@ -20,6 +21,8 @@ builder.Services.AddAuthorization(options =>
 });
 
 var app = builder.Build();
+
+app.UseExceptionHandler(exceptionHandler => exceptionHandler.ConfigureExceptionHandler());
 
 app.UseMiddleware<RequestTimingMiddleWare>();
 

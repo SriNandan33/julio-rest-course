@@ -16,21 +16,9 @@ public static class GamesEndpoints
 
         gamesGroup.MapGet("/", (IGamesRepository gameRepo, ILoggerFactory loggerFactory) =>
         {
-            try
-            {
-                return Results.Ok(gameRepo.GetAll().Select(game => game.AsDto()));
-            }
-            catch (Exception ex)
-            {
-                var logger = loggerFactory.CreateLogger("GamesEndpoint");
-                var traceId = Activity.Current?.TraceId;
-                logger.LogError(ex, "Cloud not process a request on machine {Machine}. TraceId: {TraceId}", Environment.MachineName, traceId);
-
-                return Results.Problem(title: "We made a mistake but we are working on it!", statusCode: StatusCodes.Status500InternalServerError, extensions: new Dictionary<string, object?>{
-                    {"TraceID", traceId.ToString()}
-                });
-            }
+            return Results.Ok(gameRepo.GetAll().Select(game => game.AsDto()));
         });
+
         gamesGroup.MapGet("/{id}", (IGamesRepository gameRepo, int id) =>
         {
             Game? game = gameRepo.Get(id);
