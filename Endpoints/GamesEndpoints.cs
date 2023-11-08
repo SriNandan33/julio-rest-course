@@ -1,8 +1,6 @@
-using System.Diagnostics;
 using GameStore.Dtos;
 using GameStore.Entities;
 using GameStore.Repositories;
-using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Endpoints;
 
@@ -11,13 +9,25 @@ public static class GamesEndpoints
 
     public static RouteGroupBuilder MapGamesEndpoints(this IEndpointRouteBuilder routes)
     {
-        var gamesGroup = routes.MapGroup("/games").WithParameterValidation();
+        var gamesGroup = routes
+                            .NewVersionedApi()
+                            .MapGroup("/games")
+                            .HasApiVersion(1.0)
+                            .HasApiVersion(2.0)
+                            .WithParameterValidation();
 
 
         gamesGroup.MapGet("/", (IGamesRepository gameRepo, ILoggerFactory loggerFactory) =>
         {
-            return Results.Ok(gameRepo.GetAll().Select(game => game.AsDto()));
-        });
+            return Results.Ok(gameRepo.GetAll().Select(game => game.AsDtoV1()));
+        })
+        .MapToApiVersion(1.0);
+
+        gamesGroup.MapGet("/", (IGamesRepository gameRepo, ILoggerFactory loggerFactory) =>
+        {
+            return Results.Ok(gameRepo.GetAll().Select(game => game.AsDtoV2()));
+        })
+        .MapToApiVersion(2.0);
 
         gamesGroup.MapGet("/{id}", (IGamesRepository gameRepo, int id) =>
         {
@@ -28,9 +38,11 @@ public static class GamesEndpoints
                 return Results.NotFound();
             }
 
-            return Results.Ok(game.AsDto());
-        }).WithName("GetGame")
-        .RequireAuthorization("GamesRead");
+            return Results.Ok(game.AsDtoV1());
+        })
+        .WithName("GetGame")
+        .RequireAuthorization("GamesRead")
+        .MapToApiVersion(1.0);
 
         gamesGroup.MapPost("/", (IGamesRepository gameRepo, CreateGameDTO createGameDTO) =>
         {
@@ -44,9 +56,10 @@ public static class GamesEndpoints
             };
             gameRepo.Create(game);
 
-            return Results.CreatedAtRoute("GetGame", new { id = game.Id }, game.AsDto());
+            return Results.CreatedAtRoute("GetGame", new { id = game.Id }, game.AsDtoV1());
         })
-        .RequireAuthorization(policy => policy.RequireRole("Admin"));
+        .RequireAuthorization(policy => policy.RequireRole("Admin"))
+        .MapToApiVersion(1.0);
 
         gamesGroup.MapPut("/{id}", (IGamesRepository gameRepo, int id, UpdateGameDTO updatedGameDto) =>
         {
@@ -67,7 +80,8 @@ public static class GamesEndpoints
 
             return Results.NoContent();
         })
-        .RequireAuthorization("GamesWrite");
+        .RequireAuthorization("GamesWrite")
+        .MapToApiVersion(1.0);
 
         gamesGroup.MapDelete("/{id}", (IGamesRepository gameRepo, int id) =>
         {
@@ -79,7 +93,8 @@ public static class GamesEndpoints
             }
             return Results.NoContent();
         })
-        .RequireAuthorization("GamesWrite");
+        .RequireAuthorization("GamesWrite")
+        .IsApiVersionNeutral();
 
         return gamesGroup;
     }

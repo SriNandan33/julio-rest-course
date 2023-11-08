@@ -1,4 +1,5 @@
 
+using Asp.Versioning;
 using GameStore.Data;
 using GameStore.Endpoints;
 using GameStore.ErrorHandling;
@@ -7,6 +8,14 @@ using GameStore.Repositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddProblemDetails();
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new(1.0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ApiVersionReader = new QueryStringApiVersionReader("v");
+    options.ReportApiVersions = true;
+});
 
 builder.Services.AddScoped<IGamesRepository, GamesRepository>();
 
